@@ -12,7 +12,7 @@ class Grid(UIComponentBase):
         self.row_size = height / rows
         self.objects = []
 
-    def add(self, obj, col, row, text, rowspan=1, colspan=1):
+    def add(self, obj, col, row, rowspan=1, colspan=1):
         """Add a Button to the grid at the specified row and col position in
         the grid.  Row and col are 0-based indexes.  Buttons can span multiple
         rows and columns by providing optional rowspan and colspan parameters.

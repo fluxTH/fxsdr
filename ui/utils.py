@@ -17,7 +17,7 @@ def align(child, parent, horizontal=ALIGN_CENTER, vertical=ALIGN_CENTER,
             py+(vertical*pheight-vertical*cheight)+vpad)
 
 font_cache = {}
-def get_font(size, font=None):
+def get_font(size, font='./assets/HelveticaNeue.ttf'):
     """Get font of the specified size.  Will cache fonts internally for faster
     repeated access to them.
     """

@@ -4,7 +4,9 @@ class UIComponentBase():
     surface = None
     location = (0, 0)
 
-    def get_rect(self):
+    def get_rect(self, pad=True):
+        # Returns externally used rect
+        # For internal rect, use self.surface.get_rect()
         return self.surface.get_rect(topleft=self.location)
 
     def render(self, screen, loc):
@@ -36,3 +38,6 @@ class UIPressable(UIComponentBase):
 
         self.pressed = False
         self.pressed_at = None
+
+class UIException(Exception):
+    pass
