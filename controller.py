@@ -88,8 +88,9 @@ class FxSdrController(object):
         self.update_navbar()
 
     def prompt_exit(self):
-        dialog = self.init_dialog(ExitConfirmDialog)
-        self.show_dialog(dialog)
+        if not self.dialog().__class__ is ExitConfirmDialog:
+            dialog = self.init_dialog(ExitConfirmDialog)
+            self.show_dialog(dialog)
 
     def init_dialog(self, dialog_class):
         return dialog_class(self.app.resolution, self)
