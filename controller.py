@@ -2,7 +2,7 @@ import pygame
 
 from views.navbar import Navbar
 from views.dashboard import DashboardView
-from views.dialog.alert import AlertDialog
+from views.dialog.alert import AlertDialog, ExitConfirmDialog
 
 from ui.utils import render_text
 
@@ -17,6 +17,7 @@ class FxSdrController(object):
 
     screen_scale = None
     navbar_height = None
+    dialog_footer = None
     last_interact_view = None
 
     s_content = None
@@ -86,6 +87,10 @@ class FxSdrController(object):
         del self.ViewHistory[-1]
         self.update_navbar()
 
+    def prompt_exit(self):
+        dialog = self.init_dialog(ExitConfirmDialog)
+        self.show_dialog(dialog)
+
     def init_dialog(self, dialog_class):
         return dialog_class(self.app.resolution, self)
 
@@ -93,14 +98,14 @@ class FxSdrController(object):
         self.Dialog.append(dialog)
 
     def show_alert(self, title='Alert'):
-        for k, i in enumerate(range(3)):
-            alert = self.init_dialog(AlertDialog)
-            alert.set_title(f'{title} number {i}')
+        alert1 = self.init_dialog(AlertDialog)
+        alert1.set_title(f'{title} number 1')
 
-            self.show_dialog(alert)
+        self.show_dialog(alert1)
 
     def delete_dialog(self, dialog):
         self.Dialog.remove(dialog)
+        del dialog
 
     # ---- Getter methods ----
 
@@ -126,6 +131,18 @@ class FxSdrController(object):
                 self.navbar_height = 56
 
         return self.navbar_height
+
+    def get_dialog_footer(self):
+        if self.dialog_footer is None:
+            self.dialog_footer = 60 # Default
+            if self.get_screen_scale() == SCREEN_SMALL:
+                self.dialog_footer = 50
+            elif self.get_screen_scale() == SCREEN_MEDIUM:
+                self.dialog_footer = 60
+            elif self.get_screen_scale() == SCREEN_LARGE:
+                self.dialog_footer = 70
+
+        return self.dialog_footer
 
     def navbar_resolution(self):
         return (self.app.resolution[0], self.get_navbar_height())
@@ -224,7 +241,6 @@ class FxSdrController(object):
             )
         else:
             self.s_dialog.fill((0, 0, 0, 128))
-            self.s_dialog.set_alpha(255)
             self.dialog().render(self.s_dialog)
 
             seq = (

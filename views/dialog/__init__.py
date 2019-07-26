@@ -15,18 +15,28 @@ class DialogBase(ViewBase):
     ACCENT_COLOR = (0x20, 0x20, 0x20)
 
     surface = None
+    s_content = None
 
     close_btn = None
 
     win_rect = (0, 0, 0, 0)
+    content_rect = (0, 0, 0, 0)
 
     dismissable = True
     closed = False
 
     def __init__(self, *args, **kwargs):
         super(DialogBase, self).__init__(*args, **kwargs)
+
+        if self.controller.get_screen_scale() == SCREEN_LARGE:
+            self.WIN_PAD = 50
+        else:
+            self.WIN_PAD = 30
+
         self.calc_rect()
+
         self.surface = pygame.Surface((self.win_rect[2], self.win_rect[3]))
+        self.s_content = pygame.Surface((self.content_rect[2], self.content_rect[3]))
 
     def calc_rect(self):
         self.win_rect = (
@@ -36,11 +46,24 @@ class DialogBase(ViewBase):
             self.resolution[1]-self.WIN_PAD*2
         )
 
+        self.content_rect = (
+            0,
+            self.TITLEBAR_HEIGHT,
+            self.win_rect[2],
+            self.win_rect[3]-self.TITLEBAR_HEIGHT
+        )
+
     def win_width(self):
         return self.win_rect[2]
 
     def win_height(self):
         return self.win_rect[3]
+
+    def content_width(self):
+        return self.content_rect[2]
+
+    def content_height(self):
+        return self.content_rect[3]
 
     def in_window(self, loc):
         if loc_inside(loc, self.win_rect):
@@ -72,6 +95,9 @@ class DialogBase(ViewBase):
 
     def loc_conv_window(self, loc):
         return (loc[0]-self.win_rect[0], loc[1]-self.win_rect[1])
+
+    def loc_conv_content(self, loc):
+        return (loc[0]-self.win_rect[0], loc[1]-self.win_rect[1]-self.TITLEBAR_HEIGHT)
 
     def draw_components(self, screen):
         screen.fill(self.BG_COLOR)
@@ -108,13 +134,6 @@ class DialogBase(ViewBase):
             d_count_pos = align(d_count_label.get_rect(), titlebar_rect, horizontal=ALIGN_RIGHT, hpad=-10)
             screen.blit(d_count_label, d_count_pos)
 
-        # Title bar shadow
-        pygame.draw.line(
-            screen, 
-            (0x16, 0x16, 0x16), 
-            (0, self.TITLEBAR_HEIGHT), 
-            (self.win_width(), self.TITLEBAR_HEIGHT)
-        )
 
     def draw_closebtn(self, screen):
         if self.close_btn is None:
@@ -131,7 +150,18 @@ class DialogBase(ViewBase):
         self.draw_components(screen)
 
         # Draw dialog contents
-        self.draw_dialog(screen)
+        self.s_content.fill(self.BG_COLOR)
+        self.draw_dialog(self.s_content)
+
+        screen.blit(self.s_content, self.content_rect)
+
+        # Title bar shadow
+        pygame.draw.line(
+            screen, 
+            (0x16, 0x16, 0x16), 
+            (0, self.TITLEBAR_HEIGHT), 
+            (self.win_width(), self.TITLEBAR_HEIGHT)
+        )
 
     def render(self, screen):
         self.internal_render(self.surface)

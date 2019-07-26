@@ -60,10 +60,8 @@ class FxSdrApp():
             self.resolution = (pygame.display.Info().current_w, pygame.display.Info().current_h)
             self.screen = pygame.display.set_mode(self.resolution, pygame.FULLSCREEN)
 
-        # self.screen.fill((0xcd, 0xd2, 0xdd))
-        # pygame.display.update()
-
-        # self.surface = pygame.Surface(self.resolution)
+        self.screen.fill((0x24, 0x24, 0x24))
+        pygame.display.update()
 
     def init_clock(self):
         self.clock = pygame.time.Clock()
@@ -83,10 +81,9 @@ class FxSdrApp():
         while not self.exited:
             for event in pygame.event.get():
                 if event.type is pygame.QUIT:
-                    self.exited = True
-                    continue
+                    self.controller.prompt_exit()
 
-                if event.type is pygame.MOUSEBUTTONDOWN \
+                elif event.type is pygame.MOUSEBUTTONDOWN \
                     and time() - self.mouse_lastclick > self.SETTINGS['CLICK_DEBOUNCE']:
 
                     self.mouse_hold = True
@@ -111,6 +108,8 @@ class FxSdrApp():
             self.controller.render_current(self.screen)
             pygame.display.update()
 
-            self.clock.tick(20)
+            self.clock.tick(24)
 
+    def exit(self):
+        self.exited = True
 
