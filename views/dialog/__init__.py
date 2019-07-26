@@ -76,23 +76,6 @@ class DialogBase(ViewBase):
             return True
         return False
 
-    def in_closebtn(self, loc):
-        if not self.dismissable:
-            return False
-
-        CLOSEBTN_WIDTH = self.TITLEBAR_HEIGHT
-
-        rect = (
-            self.win_rect[0]+self.win_width()-CLOSEBTN_WIDTH,
-            self.win_rect[1],
-            CLOSEBTN_WIDTH,
-            CLOSEBTN_WIDTH
-        )
-
-        if loc_inside(loc, rect):
-            return True
-        return False
-
     def loc_conv_window(self, loc):
         return (loc[0]-self.win_rect[0], loc[1]-self.win_rect[1])
 
